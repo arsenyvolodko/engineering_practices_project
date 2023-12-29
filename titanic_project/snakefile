@@ -1,0 +1,33 @@
+# Snakefile
+
+rule preprocess_data:
+    input:
+        train_data = "../data/train.csv",
+        test_data = "../data/test.csv"
+    output:
+        processed_data = "../data/preprocessed_data.csv",
+        passengers_info = "../results/passengers.txt"
+    shell:
+        """
+        python3 preprocess_data.py {input.train_data} {input.test_data} {output.processed_data} {output.passengers_info}
+        """
+
+rule train_model:
+    input:
+        processed_data = "../data/preprocessed_data.csv"
+    output:
+        model = "../models/model.pkl"
+    shell:
+        """
+        python3 train_model.py {input.processed_data} {output.model}
+        """
+
+rule predict:
+    input:
+        model = "../models/model.pkl",
+    output:
+        predictions = "../results/predictions.txt"
+    shell:
+        """
+        python3 predict_model.py {input.model} {output.predictions}
+        """
